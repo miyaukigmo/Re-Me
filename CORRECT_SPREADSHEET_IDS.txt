@@ -1,0 +1,7 @@
+# 1. Anki (暗記用) - こちらを Vercel の ANKI_SPREADSHEET_ID に設定
+# スプレッドシート名: (おそらく) ankiDB
+ANKI_SPREADSHEET_ID_REAL=1p9vEqFkFp_HjKTo25nLk78_I6pG9yG3SjT2I_F4lR3A
+
+# 2. Book (読書メモ用) - こちらはプログラム内で my_reading_memo という名前で開かれます
+# スプレッドシート名: my_reading_memo
+BOOK_SPREADSHEET_ID_REAL=1IFm1ln4-j4jFhOixZleivhTWXB8ZxMRfccgu4SyAoqA

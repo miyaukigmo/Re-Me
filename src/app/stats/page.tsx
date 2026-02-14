@@ -7,6 +7,8 @@ import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, 
 import { Loader2, TrendingUp, BookOpen, BrainCircuit } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+export const dynamic = 'force-dynamic';
+
 export default function StatsPage() {
     const [cards, setCards] = useState<AnkiCard[]>([]);
     const [loading, setLoading] = useState(true);
@@ -64,7 +66,7 @@ export default function StatsPage() {
         });
 
         // Updated Logic: Level 4+ is mature
-        const mature = levelCounts[4] + levelCounts[5]; 
+        const mature = levelCounts[4] + levelCounts[5];
         const learning = levelCounts[1] + levelCounts[2] + levelCounts[3];
         const newCards = levelCounts[0];
 
