@@ -16,7 +16,7 @@ export default async function BookPage() {
                 </div>
             </header>
 
-            <div className="flex-1 flex flex-col items-center justify-center overflow-hidden">
+            <div className="flex-1 flex flex-col items-center">
                 <BookSession initialQuotes={quotes} />
             </div>
 
