@@ -183,10 +183,10 @@ export default function BookSession({ initialQuotes }: { initialQuotes: BookQuot
                             className="relative w-full max-w-[340px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 flex flex-col cursor-pointer active:scale-[0.98] my-8"
                         >
                             {/* Main Content Area */}
-                            <div className="flex-1 flex flex-col p-8 overflow-hidden">
+                            <div className="flex-1 flex flex-col p-8">
 
                                 {/* Quote Area */}
-                                <div className="h-[170px] shrink-0 w-full overflow-y-auto custom-scrollbar flex items-start justify-center pt-2">
+                                <div className="min-h-[170px] shrink-0 w-full flex items-start justify-center pt-2">
                                     <h2 className="text-xl font-medium text-slate-800 leading-loose whitespace-pre-wrap text-center font-serif">
                                         {currentQuote.original_text}
                                     </h2>
@@ -207,10 +207,10 @@ export default function BookSession({ initialQuotes }: { initialQuotes: BookQuot
                                 </div>
 
                                 {/* Editor / Display Area */}
-                                <div className="flex-1 w-full flex flex-col relative overflow-hidden mt-1">
+                                <div className="flex-1 w-full flex flex-col relative mt-1">
                                     {editMode !== 'none' ? (
                                         <div className="flex-1 flex flex-col gap-2 animate-in fade-in slide-in-from-bottom-2 duration-200 w-full" onClick={e => e.stopPropagation()}>
-                                            <div className="overflow-y-auto custom-scrollbar space-y-3 pr-1 min-h-[200px]">
+                                            <div className="space-y-3 pr-1 min-h-[200px]">
                                                 {editMode === 'edit' ? (
                                                     <>
                                                         <div className="space-y-1">
@@ -254,7 +254,7 @@ export default function BookSession({ initialQuotes }: { initialQuotes: BookQuot
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="flex-1 overflow-y-auto custom-scrollbar py-2 flex flex-col gap-4">
+                                        <div className="flex-1 py-2 flex flex-col gap-4">
                                             {/* Note */}
                                             {currentQuote.note && (
                                                 <div className="px-3 py-2 bg-slate-50/50 rounded-xl border border-slate-100/50 shrink-0">
