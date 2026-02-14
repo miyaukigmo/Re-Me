@@ -1,5 +1,7 @@
 import { getDrive, getGoogleSheets, BOOK_SPREADSHEET_NAME } from '@/lib/google-sheets';
 
+export const dynamic = 'force-dynamic';
+
 export default async function DebugPage() {
     const drive = await getDrive();
     const filesRes = await drive.files.list({

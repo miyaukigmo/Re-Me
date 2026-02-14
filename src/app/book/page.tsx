@@ -2,6 +2,8 @@ import { getBookQuotes } from '@/app/actions';
 import BookSession from '@/components/BookSession';
 import NavBar from '@/components/NavBar';
 
+export const dynamic = 'force-dynamic';
+
 export default async function BookPage() {
     const quotes = await getBookQuotes();
 

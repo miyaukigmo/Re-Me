@@ -4,6 +4,8 @@ import NavBar from '@/components/NavBar';
 import AddCardButton from '@/components/AddCardButton';
 import BrandLogo from '@/components/BrandLogo';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const cards = await getAnkiCards();
 

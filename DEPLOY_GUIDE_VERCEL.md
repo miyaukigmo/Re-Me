@@ -23,13 +23,15 @@ git push -u origin main
 
 | Key | Value (例) |
 | :--- | :--- |
-| `GOOGLE_SHEETS_CLIENT_EMAIL` | Google Cloud Console のサービスアカウントメール |
-| `GOOGLE_SHEETS_PRIVATE_KEY` | `-----BEGIN PRIVATE KEY-----...` (引用符なしで貼り付け) |
-| `GOOGLE_SHEET_ID` | スプレッドシートのURLから抽出したID |
+| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | Google Cloud Console のサービスアカウントメール |
+| `GOOGLE_PRIVATE_KEY` | `-----BEGIN PRIVATE KEY-----...` (引用符なしで貼り付け) |
+| `GOOGLE_PROJECT_ID` | Google Cloud のプロジェクトID (例: `anki-484421`) |
+| `ANKI_SPREADSHEET_ID` | スプレッドシートのURLから抽出したID |
+| `BOOK_SPREADSHEET_NAME` | スプレッドシート内の読書メモ用シート名 (例: `my_reading_memo`) |
 | `NEXT_PUBLIC_APP_URL` | デプロイ後のURL (例: `https://re-me.vercel.app`) |
 
 > [!IMPORTANT]
-> `GOOGLE_SHEETS_PRIVATE_KEY` を貼り付ける際は、改行などが正しく認識されるよう、コピー元（.env.local）の文字列をそのまま貼り付けてください。
+> `GOOGLE_PRIVATE_KEY` を貼り付ける際は、改行などが正しく認識されるよう、コピー元（.env.local）の文字列をそのまま貼り付けてください。
 
 ## 3. デプロイの実行
 
