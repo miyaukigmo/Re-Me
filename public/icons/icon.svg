@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#4f46e5" rx="100" ry="100"/>
+  <path d="M120 120 h272 v272 h-272 z" fill="white" opacity="0.2"/>
+  <path d="M160 160 l192 192" stroke="white" stroke-width="40" stroke-linecap="round"/>
+  <path d="M352 160 l-192 192" stroke="white" stroke-width="40" stroke-linecap="round"/>
+  <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="200" fill="white" font-weight="bold">L</text>
+</svg>
