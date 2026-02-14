@@ -1,4 +1,4 @@
-import { getDrive, getGoogleSheets, BOOK_SPREADSHEET_NAME } from '@/lib/google-sheets';
+import { getDrive, getGoogleSheets, BOOK_SPREADSHEET_ID, ANKI_SPREADSHEET_ID } from '@/lib/google-sheets';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,7 +12,7 @@ export default async function DebugPage() {
     const files = filesRes.data.files || [];
 
     // Try to find the book spreadsheet
-    const bookSheet = files.find(f => f.name === BOOK_SPREADSHEET_NAME);
+    const bookSheet = files.find(f => f.id === BOOK_SPREADSHEET_ID);
 
     let sheetMetadata = null;
     let bookSheetId = bookSheet?.id;
@@ -37,7 +37,8 @@ export default async function DebugPage() {
             </ul>
 
             <h2 className="text-lg font-bold mt-4">Target Spreadsheet</h2>
-            <p>Looking for: <strong>{BOOK_SPREADSHEET_NAME}</strong></p>
+            <p>Anki Spreadsheet ID: <strong>{ANKI_SPREADSHEET_ID}</strong></p>
+            <p>Book Spreadsheet ID: <strong>{BOOK_SPREADSHEET_ID}</strong></p>
             <p>Found ID: {bookSheetId || 'NOT FOUND'}</p>
 
             {sheetMetadata && (

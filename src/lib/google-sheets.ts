@@ -28,4 +28,4 @@ export const getDrive = async () => {
 }
 
 export const ANKI_SPREADSHEET_ID = process.env.ANKI_SPREADSHEET_ID || '';
-export const BOOK_SPREADSHEET_NAME = process.env.BOOK_SPREADSHEET_NAME || 'my_reading_memo';
+export const BOOK_SPREADSHEET_ID = process.env.BOOK_SPREADSHEET_ID || '';

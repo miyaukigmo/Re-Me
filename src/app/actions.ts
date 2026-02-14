@@ -1,6 +1,6 @@
 'use server';
 
-import { getGoogleSheets, getDrive, ANKI_SPREADSHEET_ID, BOOK_SPREADSHEET_NAME } from '@/lib/google-sheets';
+import { getGoogleSheets, getDrive, ANKI_SPREADSHEET_ID, BOOK_SPREADSHEET_ID } from '@/lib/google-sheets';
 
 // Helper to get the first sheet name
 async function getFirstSheetName(sheets: any, spreadsheetId: string): Promise<string> {
@@ -248,32 +248,9 @@ export type BookQuote = {
     row_index: number;
 };
 
-// Cache the ID to avoid repeated Drive API calls
-let _bookSpreadsheetId: string | null = null;
-
-async function getBookSpreadsheetId() {
-    if (_bookSpreadsheetId) return _bookSpreadsheetId;
-
-    try {
-        const drive = await getDrive();
-        const res = await drive.files.list({
-            q: `name = '${BOOK_SPREADSHEET_NAME}' and mimeType = 'application/vnd.google-apps.spreadsheet'`,
-            fields: 'files(id, name)',
-        });
-
-        if (res.data.files && res.data.files.length > 0) {
-            _bookSpreadsheetId = res.data.files[0].id || null;
-            return _bookSpreadsheetId;
-        }
-    } catch (e) {
-        console.error("Failed to find book spreadsheet", e);
-    }
-    return null;
-}
-
 export async function getBookQuotes(): Promise<BookQuote[]> {
     try {
-        const spreadsheetId = await getBookSpreadsheetId();
+        const spreadsheetId = BOOK_SPREADSHEET_ID;
         if (!spreadsheetId) return [];
 
         const sheets = await getGoogleSheets();
@@ -321,8 +298,8 @@ export async function updateBookQuote(
     }
 ) {
     try {
-        const spreadsheetId = await getBookSpreadsheetId();
-        if (!spreadsheetId) return { success: false, error: 'Spreadsheet not found' };
+        const spreadsheetId = BOOK_SPREADSHEET_ID;
+        if (!spreadsheetId) return { success: false, error: 'Spreadsheet ID not set' };
 
         const sheets = await getGoogleSheets();
         const sheetName = await getFirstSheetName(sheets, spreadsheetId);
