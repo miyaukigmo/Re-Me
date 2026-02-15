@@ -9,6 +9,7 @@ export default function BookSession({ initialQuotes }: { initialQuotes: BookQuot
     const [quotes, setQuotes] = useState<BookQuote[]>([]);
     const [currentQuote, setCurrentQuote] = useState<BookQuote | null>(null);
     const [filterCategory, setFilterCategory] = useState<string>('All');
+    const [filterMode, setFilterMode] = useState<'All' | 'Favorites'>('All');
     const [isAnimating, setIsAnimating] = useState(false);
 
     // Edit States
@@ -19,13 +20,16 @@ export default function BookSession({ initialQuotes }: { initialQuotes: BookQuot
 
     useEffect(() => {
         setQuotes(initialQuotes);
-        pickNext(initialQuotes, 'All');
+        pickNext(initialQuotes, 'All', 'All');
     }, [initialQuotes]);
 
-    const pickNext = (pool: BookQuote[], category: string) => {
+    const pickNext = (pool: BookQuote[], category: string, mode: 'All' | 'Favorites') => {
         let filteredPool = pool;
         if (category !== 'All') {
             filteredPool = pool.filter(q => q.category === category);
+        }
+        if (mode === 'Favorites') {
+            filteredPool = filteredPool.filter(q => q.is_favorite);
         }
 
         if (filteredPool.length === 0) {
@@ -86,9 +90,9 @@ export default function BookSession({ initialQuotes }: { initialQuotes: BookQuot
 
             const updatedBatch = quotes.map(q => q.id === currentQuote.id ? { ...q, ...updates } : q);
             setQuotes(updatedBatch);
-            pickNext(updatedBatch, filterCategory);
+            pickNext(updatedBatch, filterCategory, filterMode);
         } else {
-            pickNext(quotes, filterCategory);
+            pickNext(quotes, filterCategory, filterMode);
         }
     };
 
@@ -104,7 +108,12 @@ export default function BookSession({ initialQuotes }: { initialQuotes: BookQuot
 
     const handleCategoryChange = (cat: string) => {
         setFilterCategory(cat);
-        pickNext(quotes, cat);
+        pickNext(quotes, cat, filterMode);
+    };
+
+    const handleFilterModeChange = (mode: 'All' | 'Favorites') => {
+        setFilterMode(mode);
+        pickNext(quotes, filterCategory, mode);
     };
 
     const toggleFavorite = async (e: React.MouseEvent) => {
@@ -139,13 +148,29 @@ export default function BookSession({ initialQuotes }: { initialQuotes: BookQuot
     if (!currentQuote && quotes.length > 0 && !isAnimating) {
         return (
             <div className="flex flex-col items-center justify-center p-8 text-center h-full gap-4">
-                <p className="text-slate-400">このカテゴリにはメモがありません</p>
-                <button
-                    onClick={() => handleCategoryChange('All')}
-                    className="text-indigo-600 font-bold text-sm"
-                >
-                    すべて表示に戻る
-                </button>
+                <p className="text-slate-400">
+                    {filterMode === 'Favorites'
+                        ? 'お気に入りのメモがありません'
+                        : 'このカテゴリにはメモがありません'}
+                </p>
+                <div className="flex gap-2">
+                    {filterMode === 'Favorites' && (
+                        <button
+                            onClick={() => handleFilterModeChange('All')}
+                            className="text-indigo-600 font-bold text-sm bg-indigo-50 px-4 py-2 rounded-lg hover:bg-indigo-100 transition-colors"
+                        >
+                            すべて表示
+                        </button>
+                    )}
+                    {filterCategory !== 'All' && (
+                        <button
+                            onClick={() => handleCategoryChange('All')}
+                            className="text-cyan-600 font-bold text-sm bg-cyan-50 px-4 py-2 rounded-lg hover:bg-cyan-100 transition-colors"
+                        >
+                            全カテゴリ
+                        </button>
+                    )}
+                </div>
             </div>
         );
     }
@@ -153,8 +178,25 @@ export default function BookSession({ initialQuotes }: { initialQuotes: BookQuot
     return (
         <div className="max-w-md mx-auto w-full h-full flex flex-col items-center px-4 pt-2">
 
+            {/* Filter Tabs */}
+            <div className="flex bg-slate-100/80 p-1 rounded-xl mb-4 shadow-inner">
+                <button
+                    onClick={() => handleFilterModeChange('All')}
+                    className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${filterMode === 'All' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                >
+                    ALL
+                </button>
+                <button
+                    onClick={() => handleFilterModeChange('Favorites')}
+                    className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${filterMode === 'Favorites' ? 'bg-white text-rose-500 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                >
+                    <Heart size={10} className={filterMode === 'Favorites' ? 'fill-current' : ''} />
+                    FAVORITES
+                </button>
+            </div>
+
             {/* Category Selector */}
-            <div className="w-full mb-6 flex justify-center">
+            <div className="w-full mb-2 flex justify-center">
                 <div className="relative inline-block group">
                     <select
                         value={filterCategory}

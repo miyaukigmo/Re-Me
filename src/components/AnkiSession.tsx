@@ -277,7 +277,7 @@ export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[]
     }
 
     return (
-        <div className="w-full max-w-sm mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 h-[600px] flex flex-col relative z-0">
+        <div className="w-full max-w-sm mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 h-[70vh] min-h-[500px] max-h-[85vh] flex flex-col relative z-0">
             {/* Silent Progress Bar */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-slate-50 z-30">
                 <motion.div
@@ -361,26 +361,28 @@ export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[]
 
             {/* Content Area */}
             <div
-                className={`flex-1 flex flex-col items-center justify-center p-10 cursor-pointer relative z-0 ${showAnswer ? 'hidden' : 'flex'} bg-slate-50/50`}
+                className={`flex-1 flex flex-col items-center justify-center p-10 cursor-pointer relative z-0 ${showAnswer ? 'hidden' : 'flex'} bg-slate-50/50 overflow-y-auto custom-scrollbar`}
                 onClick={() => setShowAnswer(true)}
             >
-                <div className="text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full px-8">
+                <div className="w-full text-center">
                     <span className="text-xs font-bold text-slate-400 tracking-wider uppercase mb-4 block">Question</span>
-                    <h3 className="text-2xl font-medium text-slate-800 whitespace-pre-wrap leading-relaxed font-hand">
+                    <h3 className="text-2xl font-medium text-slate-800 whitespace-pre-wrap leading-relaxed font-hand mb-8">
                         {getQuestionText()}
                     </h3>
                 </div>
-                <div className="absolute bottom-6 text-slate-400 text-sm animate-pulse">
+                <div className="text-slate-400 text-sm animate-pulse mt-auto pt-4">
                     Tap to show answer
                 </div>
             </div>
 
             {showAnswer && (
-                <div className="flex-1 flex flex-col items-center justify-center p-10 text-center bg-white animate-in fade-in duration-500 overflow-y-auto custom-scrollbar relative">
-                    <span className="text-xs font-bold text-slate-400 tracking-wider uppercase mb-4 block">Answer</span>
-                    <h3 className="text-xl font-medium text-slate-800 whitespace-pre-wrap leading-relaxed font-serif">
-                        {getAnswerText()}
-                    </h3>
+                <div className="flex-1 flex flex-col items-center p-10 text-center bg-white animate-in fade-in duration-500 overflow-y-auto custom-scrollbar relative">
+                    <div className="w-full">
+                        <span className="text-xs font-bold text-slate-400 tracking-wider uppercase mb-4 block">Answer</span>
+                        <h3 className="text-xl font-medium text-slate-800 whitespace-pre-wrap leading-relaxed font-serif pb-12">
+                            {getAnswerText()}
+                        </h3>
+                    </div>
 
                     {/* Edit Button */}
                     <button

@@ -82,9 +82,9 @@ export default function EditCardModal({
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="fixed inset-x-4 top-20 z-50 max-w-lg mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100"
+                        className="fixed inset-x-4 top-10 bottom-10 md:top-20 md:bottom-auto z-50 max-w-lg mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100 flex flex-col max-h-[85vh]"
                     >
-                        <div className="flex items-center justify-between p-4 border-b border-slate-50">
+                        <div className="flex items-center justify-between p-4 border-b border-slate-50 shrink-0">
                             <h2 className="text-lg font-heading font-bold text-slate-800 flex items-center gap-2">
                                 <Pencil size={18} className="text-slate-400" />
                                 カードを編集
@@ -94,7 +94,7 @@ export default function EditCardModal({
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                        <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto custom-scrollbar flex-1 overscroll-contain">
                             <div className="space-y-2">
                                 <label className="block text-sm font-medium text-slate-500">質問 (表面)</label>
                                 <textarea
@@ -140,7 +140,7 @@ export default function EditCardModal({
                                 </div>
                             )}
 
-                            <div className="flex gap-3 pt-2">
+                            <div className="flex gap-3 pt-2 pb-6">
                                 <button
                                     type="button"
                                     onClick={onClose}
