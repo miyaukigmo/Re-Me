@@ -34,10 +34,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         setThemeColor(randomColor);
     }, [pathname]);
 
-    if (!mounted) {
-        return <>{children}</>;
-    }
-
+    // Always provide context, even during SSR/Hydration
+    // We use 'indigo' as the default initial theme to match server output
     return (
         <ThemeContext.Provider value={{ themeColor, gradientClass: themes[themeColor] }}>
             <main className={`min-h-screen bg-gradient-to-b ${themes[themeColor]} transition-colors duration-1000`}>
