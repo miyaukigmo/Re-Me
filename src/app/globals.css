@@ -42,7 +42,11 @@
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
 }
 
-@utility glass-card {
+@utility glass-card-dark {
+  @apply bg-slate-900/80 backdrop-blur-xl border border-white/10 shadow-xl;
+}
+
+@utility glass-effect {
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);

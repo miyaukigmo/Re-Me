@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { AnkiCard, updateAnkiCard, getAnkiSheets, getAnkiCards } from '@/app/actions';
-import { Check, X, AlertCircle, Award, CheckCircle, Pencil, Layers, Loader2, ChevronDown } from 'lucide-react';
+import { Check, X, AlertCircle, Award, CheckCircle, Pencil, Layers, Loader2, ChevronDown, Moon, Sun } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import EditCardModal from './EditCardModal';
 import { useTheme } from '@/context/ThemeContext';
 
 export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[] }) {
-    const { themeColor } = useTheme();
+    const { themeColor, isDarkMode } = useTheme();
     const [cards, setCards] = useState<AnkiCard[]>([]);
     const [currentCard, setCurrentCard] = useState<AnkiCard | null>(null);
     const [currentIndex, setCurrentIndex] = useState(-1);
@@ -26,6 +26,13 @@ export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[]
     const [mode, setMode] = useState<'normal' | 'reverse' | 'tag'>('normal');
     const [selectedTag, setSelectedTag] = useState<string>('All');
     const [uniqueTags, setUniqueTags] = useState<string[]>([]);
+
+    // Theme Variables
+    const cardClass = isDarkMode ? 'glass-card-dark' : 'glass-card';
+    const contentBg = isDarkMode ? 'bg-slate-900/30' : 'bg-slate-50/50';
+    const answerBg = isDarkMode ? 'bg-slate-800/80' : 'bg-white';
+    const textColor = isDarkMode ? 'text-slate-200' : 'text-slate-800';
+    const labelColor = isDarkMode ? 'text-slate-500' : 'text-slate-400';
 
     const getDueCount = (pool: AnkiCard[], currentMode: string, currentTag: string) => {
         const now = new Date();
@@ -48,7 +55,6 @@ export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[]
 
     const currentDueCount = getDueCount(cards, mode, selectedTag);
     const progress = initialDueCount > 0 ? ((initialDueCount - currentDueCount) / initialDueCount) * 100 : 0;
-    // Ensure progress doesn't go negative or weird if due count increases (e.g. edit)
     const normalizedProgress = Math.min(100, Math.max(0, progress));
 
     const getBarColor = () => {
@@ -227,7 +233,7 @@ export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[]
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-64 text-slate-400 gap-2">
+            <div className={`flex items-center justify-center h-64 gap-2 ${labelColor}`}>
                 <Loader2 className="animate-spin" size={24} />
                 <span>読み込み中...</span>
             </div>
@@ -240,8 +246,8 @@ export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[]
                 <div className="bg-green-50 p-4 rounded-full text-green-500 mb-2">
                     <CheckCircle size={40} />
                 </div>
-                <h2 className="text-2xl font-bold text-slate-800 font-serif">Complete!</h2>
-                <p className="text-slate-500 max-w-xs font-serif">
+                <h2 className={`text-2xl font-bold font-serif ${textColor}`}>Complete!</h2>
+                <p className={`${labelColor} max-w-xs font-serif`}>
                     {mode === 'normal' && "今日の分の通常復習は完了です！素晴らしい！"}
                     {mode === 'reverse' && "反転学習の今日の分は完了です！"}
                     {mode === 'tag' && `${selectedTag === 'All' ? '全' : selectedTag}タグの学習完了です！`}
@@ -277,9 +283,9 @@ export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[]
     }
 
     return (
-        <div className="w-full max-w-sm mx-auto glass-card rounded-3xl overflow-hidden h-[70vh] min-h-[500px] max-h-[85vh] flex flex-col relative z-0">
+        <div className={`w-full max-w-sm mx-auto ${cardClass} rounded-3xl overflow-hidden h-[70vh] min-h-[500px] max-h-[85vh] flex flex-col relative z-0 transition-colors duration-500`}>
             {/* Silent Progress Bar */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-slate-50 z-30">
+            <div className={`absolute top-0 left-0 right-0 h-1 z-30 ${isDarkMode ? 'bg-slate-800' : 'bg-slate-50'}`}>
                 <motion.div
                     className={`h-full ${getBarColor()}`}
                     initial={{ width: 0 }}
@@ -294,7 +300,7 @@ export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[]
                     {/* Compact Mode/Sheet Indicators */}
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className="bg-white/90 backdrop-blur border border-slate-200 shadow-sm rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-600 flex items-center gap-2 hover:bg-slate-50 transition-colors max-w-full"
+                        className={`backdrop-blur border shadow-sm rounded-lg px-3 py-1.5 text-xs font-semibold flex items-center gap-2 transition-colors max-w-full ${isDarkMode ? 'bg-slate-800/90 border-slate-700 text-slate-300 hover:bg-slate-700' : 'bg-white/90 border-slate-200 text-slate-600 hover:bg-slate-50'}`}
                     >
                         <Layers size={14} className="text-indigo-500 shrink-0" />
                         <span className="truncate">
@@ -359,27 +365,29 @@ export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[]
                 </div>
             </div>
 
-            {/* Content Area */}
-            <div
-                className={`flex-1 flex flex-col items-center justify-center p-10 cursor-pointer relative z-0 ${showAnswer ? 'hidden' : 'flex'} bg-slate-50/50 overflow-y-auto custom-scrollbar`}
-                onClick={() => setShowAnswer(true)}
-            >
-                <div className="w-full text-center">
-                    <span className="text-xs font-bold text-slate-400 tracking-wider uppercase mb-4 block">Question</span>
-                    <h3 className="text-2xl font-medium text-slate-800 whitespace-pre-wrap leading-relaxed font-hand mb-8">
-                        {getQuestionText()}
-                    </h3>
+            {/* Content Area - Safe Centering Strategy */}
+            {!showAnswer && (
+                <div
+                    className={`flex-1 overflow-y-auto custom-scrollbar cursor-pointer relative z-0 ${contentBg} transition-colors duration-500`}
+                    onClick={() => setShowAnswer(true)}
+                >
+                    <div className="min-h-full flex flex-col items-center justify-center p-10 text-center">
+                        <span className={`text-xs font-bold ${labelColor} tracking-wider uppercase mb-4 block`}>Question</span>
+                        <h3 className={`text-2xl font-medium ${textColor} whitespace-pre-wrap leading-relaxed font-hand transition-colors duration-500`}>
+                            {getQuestionText()}
+                        </h3>
+                        <div className="mt-8 text-slate-400 text-sm animate-pulse">
+                            Tap to show answer
+                        </div>
+                    </div>
                 </div>
-                <div className="text-slate-400 text-sm animate-pulse mt-auto pt-4">
-                    Tap to show answer
-                </div>
-            </div>
+            )}
 
             {showAnswer && (
-                <div className="flex-1 flex flex-col items-center p-10 text-center bg-white animate-in fade-in duration-500 overflow-y-auto custom-scrollbar relative">
-                    <div className="w-full">
-                        <span className="text-xs font-bold text-slate-400 tracking-wider uppercase mb-4 block">Answer</span>
-                        <h3 className="text-xl font-medium text-slate-800 whitespace-pre-wrap leading-relaxed font-serif pb-12">
+                <div className={`flex-1 overflow-y-auto custom-scrollbar relative animate-in fade-in duration-500 ${answerBg} transition-colors duration-500`}>
+                    <div className="min-h-full flex flex-col items-center justify-center p-10 text-center pb-20">
+                        <span className={`text-xs font-bold ${labelColor} tracking-wider uppercase mb-4 block`}>Answer</span>
+                        <h3 className={`text-xl font-medium ${textColor} whitespace-pre-wrap leading-relaxed font-serif transition-colors duration-500`}>
                             {getAnswerText()}
                         </h3>
                     </div>
@@ -390,7 +398,7 @@ export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[]
                             e.stopPropagation();
                             setIsEditModalOpen(true);
                         }}
-                        className="absolute bottom-4 right-4 p-2 text-slate-300 hover:text-slate-500 hover:bg-slate-50 rounded-full transition-all"
+                        className={`absolute bottom-4 right-4 p-2 rounded-full transition-all ${isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-slate-700' : 'text-slate-300 hover:text-slate-500 hover:bg-slate-50'}`}
                         aria-label="Edit Card"
                     >
                         <Pencil size={14} />
@@ -400,20 +408,20 @@ export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[]
 
             {/* Controls */}
             {showAnswer && (
-                <div className="p-4 bg-white border-t border-slate-100 grid grid-cols-4 gap-3 z-10">
-                    <button onClick={() => handleRating('fail')} className="flex flex-col items-center gap-1 p-3 rounded-xl bg-rose-50 hover:bg-rose-100 transition-colors group">
+                <div className={`p-4 border-t grid grid-cols-4 gap-3 z-10 ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
+                    <button onClick={() => handleRating('fail')} className={`flex flex-col items-center gap-1 p-3 rounded-xl transition-colors group ${isDarkMode ? 'bg-rose-900/30 hover:bg-rose-900/50' : 'bg-rose-50 hover:bg-rose-100'}`}>
                         <X size={20} className="text-rose-500 group-hover:scale-110 transition-transform" />
                         <span className="text-[10px] font-bold text-rose-600 uppercase">Fail</span>
                     </button>
-                    <button onClick={() => handleRating('hard')} className="flex flex-col items-center gap-1 p-3 rounded-xl bg-orange-50 hover:bg-orange-100 transition-colors group">
+                    <button onClick={() => handleRating('hard')} className={`flex flex-col items-center gap-1 p-3 rounded-xl transition-colors group ${isDarkMode ? 'bg-orange-900/30 hover:bg-orange-900/50' : 'bg-orange-50 hover:bg-orange-100'}`}>
                         <AlertCircle size={20} className="text-orange-500 group-hover:scale-110 transition-transform" />
                         <span className="text-[10px] font-bold text-orange-600 uppercase">Hard</span>
                     </button>
-                    <button onClick={() => handleRating('good')} className="flex flex-col items-center gap-1 p-3 rounded-xl bg-blue-50 hover:bg-blue-100 transition-colors group">
+                    <button onClick={() => handleRating('good')} className={`flex flex-col items-center gap-1 p-3 rounded-xl transition-colors group ${isDarkMode ? 'bg-blue-900/30 hover:bg-blue-900/50' : 'bg-blue-50 hover:bg-blue-100'}`}>
                         <Check size={20} className="text-blue-500 group-hover:scale-110 transition-transform" />
                         <span className="text-[10px] font-bold text-blue-600 uppercase">Good</span>
                     </button>
-                    <button onClick={() => handleRating('easy')} className="flex flex-col items-center gap-1 p-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 transition-colors group">
+                    <button onClick={() => handleRating('easy')} className={`flex flex-col items-center gap-1 p-3 rounded-xl transition-colors group ${isDarkMode ? 'bg-emerald-900/30 hover:bg-emerald-900/50' : 'bg-emerald-50 hover:bg-emerald-100'}`}>
                         <Award size={20} className="text-emerald-500 group-hover:scale-110 transition-transform" />
                         <span className="text-[10px] font-bold text-emerald-600 uppercase">Easy</span>
                     </button>

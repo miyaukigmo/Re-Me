@@ -5,6 +5,8 @@ import { X, Pencil, Loader2, Save } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { editAnkiCardContent, getUniqueTags } from '@/app/actions';
 
+import { useTheme } from '@/context/ThemeContext';
+
 interface EditCardModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -24,12 +26,20 @@ export default function EditCardModal({
     initialTags,
     rowIndex
 }: EditCardModalProps) {
+    const { isDarkMode } = useTheme();
     const [question, setQuestion] = useState(initialQuestion);
     const [answer, setAnswer] = useState(initialAnswer);
     const [tags, setTags] = useState(initialTags);
     const [existingTags, setExistingTags] = useState<string[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
+
+    // Theme Variables
+    const modalClass = isDarkMode ? 'glass-card-dark' : 'glass-card';
+    const inputBg = isDarkMode ? 'bg-slate-800/50' : 'bg-slate-50';
+    const textColor = isDarkMode ? 'text-slate-200' : 'text-slate-800';
+    const labelColor = isDarkMode ? 'text-slate-400' : 'text-slate-500';
+    const placeholderColor = isDarkMode ? 'placeholder:text-slate-600' : 'placeholder:text-slate-300';
 
     useEffect(() => {
         if (isOpen) {
@@ -82,49 +92,49 @@ export default function EditCardModal({
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="fixed inset-x-4 top-10 bottom-10 md:top-20 md:bottom-auto z-50 max-w-lg mx-auto glass-card rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[85vh]"
+                        className={`fixed inset-x-4 top-10 bottom-10 md:top-20 md:bottom-auto z-50 max-w-lg mx-auto ${modalClass} rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[85vh] transition-colors duration-300`}
                     >
-                        <div className="flex items-center justify-between p-4 border-b border-slate-50/50 shrink-0">
-                            <h2 className="text-lg font-heading font-bold text-slate-800 flex items-center gap-2">
-                                <Pencil size={18} className="text-slate-400" />
+                        <div className={`flex items-center justify-between p-4 border-b ${isDarkMode ? 'border-slate-700/50' : 'border-slate-50/50'} shrink-0`}>
+                            <h2 className={`text-lg font-heading font-bold ${textColor} flex items-center gap-2`}>
+                                <Pencil size={18} className={labelColor} />
                                 カードを編集
                             </h2>
-                            <button onClick={onClose} className="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-50 transition-colors">
+                            <button onClick={onClose} className={`p-2 rounded-full transition-colors ${isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-slate-700' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'}`}>
                                 <X size={20} />
                             </button>
                         </div>
 
                         <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto custom-scrollbar flex-1 overscroll-contain">
                             <div className="space-y-2">
-                                <label className="block text-sm font-medium text-slate-500">質問 (表面)</label>
+                                <label className={`block text-sm font-medium ${labelColor}`}>質問 (表面)</label>
                                 <textarea
                                     value={question}
                                     onChange={(e) => setQuestion(e.target.value)}
-                                    className="w-full p-4 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-[var(--color-main)]/50 text-slate-800 font-hand text-lg resize-none placeholder:text-slate-300 transition-all"
+                                    className={`w-full p-4 rounded-xl ${inputBg} border-none focus:ring-2 focus:ring-[var(--color-main)]/50 ${textColor} font-hand text-lg resize-none ${placeholderColor} transition-all`}
                                     placeholder="質問を入力してください..."
                                     rows={3}
                                 />
                             </div>
 
                             <div className="space-y-2">
-                                <label className="block text-sm font-medium text-slate-500">答え (裏面)</label>
+                                <label className={`block text-sm font-medium ${labelColor}`}>答え (裏面)</label>
                                 <textarea
                                     value={answer}
                                     onChange={(e) => setAnswer(e.target.value)}
-                                    className="w-full p-4 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-[var(--color-main)]/50 text-slate-800 font-serif text-lg resize-none placeholder:text-slate-300 transition-all"
+                                    className={`w-full p-4 rounded-xl ${inputBg} border-none focus:ring-2 focus:ring-[var(--color-main)]/50 ${textColor} font-serif text-lg resize-none ${placeholderColor} transition-all`}
                                     placeholder="答えを入力してください..."
                                     rows={3}
                                 />
                             </div>
 
                             <div className="space-y-2">
-                                <label className="block text-sm font-medium text-slate-500">タグ (選択または入力)</label>
+                                <label className={`block text-sm font-medium ${labelColor}`}>タグ (選択または入力)</label>
                                 <input
                                     type="text"
                                     list="edit-tag-suggestions"
                                     value={tags}
                                     onChange={(e) => setTags(e.target.value)}
-                                    className="w-full p-4 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-[var(--color-main)]/50 text-slate-800 font-sans text-lg placeholder:text-slate-300 transition-all"
+                                    className={`w-full p-4 rounded-xl ${inputBg} border-none focus:ring-2 focus:ring-[var(--color-main)]/50 ${textColor} font-sans text-lg ${placeholderColor} transition-all`}
                                     placeholder="タグを選択または入力..."
                                 />
                                 <datalist id="edit-tag-suggestions">
@@ -144,7 +154,7 @@ export default function EditCardModal({
                                 <button
                                     type="button"
                                     onClick={onClose}
-                                    className="flex-1 py-3 px-4 rounded-xl border border-slate-200 text-slate-600 font-medium hover:bg-slate-50 transition-colors"
+                                    className={`flex-1 py-3 px-4 rounded-xl border font-medium transition-colors ${isDarkMode ? 'border-slate-700 text-slate-400 hover:bg-slate-800' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}
                                 >
                                     キャンセル
                                 </button>
