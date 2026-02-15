@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Outfit, Zen_Old_Mincho, Zen_Kurenaido, Dancing_Script } from "next/font/google";
 import "./globals.css";
-import ThemeWrapper from "@/components/ThemeWrapper";
+import { ThemeProvider } from "@/context/ThemeContext";
 import StartupOverlay from "@/components/StartupOverlay";
 
 const inter = Inter({
@@ -64,10 +64,10 @@ export default function RootLayout({
         suppressHydrationWarning={true}
         className={`${inter.variable} ${outfit.variable} ${zenOldMincho.variable} ${zenKurenaido.variable} ${dancingScript.variable} antialiased text-slate-900 bg-slate-50 font-serif`}
       >
-        <ThemeWrapper>
+        <ThemeProvider>
           <StartupOverlay />
           {children}
-        </ThemeWrapper>
+        </ThemeProvider>
       </body>
     </html>
   );

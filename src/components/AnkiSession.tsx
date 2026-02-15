@@ -5,14 +5,19 @@ import { AnkiCard, updateAnkiCard, getAnkiSheets, getAnkiCards } from '@/app/act
 import { Check, X, AlertCircle, Award, CheckCircle, Pencil, Layers, Loader2, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import EditCardModal from './EditCardModal';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[] }) {
+    const { themeColor } = useTheme();
     const [cards, setCards] = useState<AnkiCard[]>([]);
     const [currentCard, setCurrentCard] = useState<AnkiCard | null>(null);
     const [currentIndex, setCurrentIndex] = useState(-1);
     const [showAnswer, setShowAnswer] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    // Progress State
+    const [initialDueCount, setInitialDueCount] = useState(0);
 
     // Advanced Modes State
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,6 +27,41 @@ export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[]
     const [selectedTag, setSelectedTag] = useState<string>('All');
     const [uniqueTags, setUniqueTags] = useState<string[]>([]);
 
+    const getDueCount = (pool: AnkiCard[], currentMode: string, currentTag: string) => {
+        const now = new Date();
+        const today = now.toISOString().split('T')[0];
+
+        let candidates = pool;
+        if (currentMode === 'tag' && currentTag !== 'All') {
+            candidates = pool.filter(c => c.tags.includes(currentTag));
+        }
+
+        return candidates.filter(card => {
+            let nextReview = card.next_review;
+            if (currentMode === 'reverse') nextReview = card.reverse_next_review;
+            if (currentMode === 'tag') nextReview = card.tag_next_review;
+
+            if (!nextReview) return true;
+            return nextReview <= today;
+        }).length;
+    };
+
+    const currentDueCount = getDueCount(cards, mode, selectedTag);
+    const progress = initialDueCount > 0 ? ((initialDueCount - currentDueCount) / initialDueCount) * 100 : 0;
+    // Ensure progress doesn't go negative or weird if due count increases (e.g. edit)
+    const normalizedProgress = Math.min(100, Math.max(0, progress));
+
+    const getBarColor = () => {
+        switch (themeColor) {
+            case 'teal': return 'bg-teal-400';
+            case 'rose': return 'bg-rose-400';
+            case 'amber': return 'bg-amber-400';
+            case 'cyan': return 'bg-cyan-400';
+            case 'slate': return 'bg-slate-400';
+            default: return 'bg-indigo-400';
+        }
+    };
+
     useEffect(() => {
         // Initial setup
         const loadInitial = async () => {
@@ -30,6 +70,8 @@ export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[]
             if (sheetNames.length > 0) setCurrentSheet(sheetNames[0]);
 
             setCards(initialCards);
+            const initialCount = getDueCount(initialCards, 'normal', 'All');
+            setInitialDueCount(initialCount);
             pickNextCard(initialCards, 'normal', 'All');
         };
         loadInitial();
@@ -51,6 +93,10 @@ export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[]
             });
             setUniqueTags(Array.from(tags).sort());
 
+            // Reset progress for new sheet
+            const newDue = getDueCount(newCards, mode, selectedTag);
+            setInitialDueCount(newDue);
+
             pickNextCard(newCards, mode, selectedTag);
             setLoading(false);
         });
@@ -59,6 +105,10 @@ export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[]
     // Re-pick when Mode or Tag changes
     useEffect(() => {
         if (cards.length > 0) {
+            // Reset progress for new mode
+            const newDue = getDueCount(cards, mode, selectedTag);
+            setInitialDueCount(newDue);
+
             pickNextCard(cards, mode, selectedTag);
         }
     }, [mode, selectedTag]);
@@ -228,8 +278,18 @@ export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[]
 
     return (
         <div className="w-full max-w-sm mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 h-[600px] flex flex-col relative z-0">
+            {/* Silent Progress Bar */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-slate-50 z-30">
+                <motion.div
+                    className={`h-full ${getBarColor()}`}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${normalizedProgress}%` }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                />
+            </div>
+
             {/* Header / Mode Controls */}
-            <div className="absolute top-0 inset-x-0 p-4 z-20 flex justify-between items-start pointer-events-none">
+            <div className="absolute top-0 inset-x-0 p-4 z-20 flex justify-between items-start pointer-events-none mt-2">
                 <div className="pointer-events-auto flex flex-col gap-2 max-w-[80%]">
                     {/* Compact Mode/Sheet Indicators */}
                     <button
