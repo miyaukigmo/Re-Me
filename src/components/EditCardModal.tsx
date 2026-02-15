@@ -82,9 +82,9 @@ export default function EditCardModal({
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="fixed inset-x-4 top-10 bottom-10 md:top-20 md:bottom-auto z-50 max-w-lg mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100 flex flex-col max-h-[85vh]"
+                        className="fixed inset-x-4 top-10 bottom-10 md:top-20 md:bottom-auto z-50 max-w-lg mx-auto glass-card rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[85vh]"
                     >
-                        <div className="flex items-center justify-between p-4 border-b border-slate-50 shrink-0">
+                        <div className="flex items-center justify-between p-4 border-b border-slate-50/50 shrink-0">
                             <h2 className="text-lg font-heading font-bold text-slate-800 flex items-center gap-2">
                                 <Pencil size={18} className="text-slate-400" />
                                 カードを編集

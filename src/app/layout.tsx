@@ -64,6 +64,7 @@ export default function RootLayout({
         suppressHydrationWarning={true}
         className={`${inter.variable} ${outfit.variable} ${zenOldMincho.variable} ${zenKurenaido.variable} ${dancingScript.variable} antialiased text-slate-900 bg-slate-50 font-serif`}
       >
+        <div className="bg-noise" />
         <ThemeProvider>
           <StartupOverlay />
           {children}

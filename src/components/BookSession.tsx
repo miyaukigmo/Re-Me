@@ -222,7 +222,7 @@ export default function BookSession({ initialQuotes }: { initialQuotes: BookQuot
                             exit={{ opacity: 0, scale: 0.95, y: -10 }}
                             transition={{ duration: 0.3 }}
                             onClick={handleNext}
-                            className="relative w-full max-w-[340px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 flex flex-col cursor-pointer active:scale-[0.98] my-8"
+                            className="relative w-full max-w-[340px] glass-card rounded-[2.5rem] flex flex-col cursor-pointer active:scale-[0.98] my-8"
                         >
                             {/* Main Content Area */}
                             <div className="flex-1 flex flex-col p-8">

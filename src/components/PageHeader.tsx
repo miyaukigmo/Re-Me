@@ -1,5 +1,6 @@
 'use client';
 
+import React, { useState } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import BrandLogo from '@/components/BrandLogo';
 
@@ -9,23 +10,27 @@ type PageHeaderProps = {
 };
 
 export default function PageHeader({ title, rightElement }: PageHeaderProps) {
-    const { themeColor } = useTheme();
+    const { theme, selectTheme, themeColor } = useTheme();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const getThemeColors = () => {
-        switch (themeColor) {
-            case 'teal': return { bg: 'bg-teal-100', text: 'text-teal-600' };
-            case 'rose': return { bg: 'bg-rose-100', text: 'text-rose-600' };
-            case 'amber': return { bg: 'bg-amber-100', text: 'text-amber-600' };
-            case 'cyan': return { bg: 'bg-cyan-100', text: 'text-cyan-600' };
-            case 'slate': return { bg: 'bg-slate-100', text: 'text-slate-600' };
-            default: return { bg: 'bg-indigo-100', text: 'text-indigo-600' };
-        }
-    };
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-    const colors = getThemeColors();
+    const themeOptions = [
+        { id: 'indigo', label: 'Indigo', color: 'bg-indigo-500' },
+        { id: 'teal', label: 'Teal', color: 'bg-teal-500' },
+        { id: 'rose', label: 'Rose', color: 'bg-rose-500' },
+        { id: 'amber', label: 'Amber', color: 'bg-amber-500' },
+        { id: 'slate', label: 'Slate', color: 'bg-slate-500' },
+        { id: 'cyan', label: 'Cyan', color: 'bg-cyan-500' },
+        { id: 'midnight', label: 'Midnight', color: 'bg-slate-900' },
+        { id: 'sakura', label: 'Sakura', color: 'bg-pink-400' },
+        { id: 'fresh_green', label: 'Fresh Green', color: 'bg-emerald-500' },
+        { id: 'autumn', label: 'Autumn', color: 'bg-orange-600' },
+        { id: 'snow', label: 'Snow', color: 'bg-sky-300' },
+    ] as const;
 
     return (
-        <header className="p-4 flex items-center justify-between bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-10 supports-[backdrop-filter]:bg-white/60">
+        <header className="p-4 flex items-center justify-between glass sticky top-0 z-10 border-x-0 border-t-0 rounded-none relative">
             {title ? (
                 <h1 className="text-xl font-heading font-bold text-slate-800 tracking-tight">{title}</h1>
             ) : (
@@ -36,8 +41,36 @@ export default function PageHeader({ title, rightElement }: PageHeaderProps) {
 
             <div className="flex items-center gap-3">
                 {rightElement}
-                <div className={`w-8 h-8 rounded-full ${colors.bg} flex items-center justify-center ${colors.text} font-bold text-xs ring-2 ring-white shadow-sm transition-colors duration-500`}>
-                    M
+
+                <div className="relative">
+                    <button
+                        onClick={toggleMenu}
+                        className={`w-8 h-8 rounded-full ${theme.avatarBg} flex items-center justify-center ${theme.avatarText} font-bold text-xs ring-2 ring-white shadow-sm transition-colors duration-500 cursor-pointer hover:opacity-80 active:scale-95`}
+                    >
+                        M
+                    </button>
+
+                    {isMenuOpen && (
+                        <>
+                            <div className="fixed inset-0 z-40" onClick={() => setIsMenuOpen(false)} />
+                            <div className="absolute right-0 top-10 w-48 bg-white/90 glass-card rounded-xl p-2 shadow-xl z-50 flex flex-col gap-1 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                                <p className="text-[10px] font-bold text-slate-400 px-2 py-1 uppercase tracking-wider">Select Theme</p>
+                                <div className="grid grid-cols-4 gap-2 p-1">
+                                    {themeOptions.map((t) => (
+                                        <button
+                                            key={t.id}
+                                            onClick={() => {
+                                                selectTheme(t.id);
+                                                setIsMenuOpen(false);
+                                            }}
+                                            className={`w-8 h-8 rounded-full ${t.color} shadow-sm border-2 transition-transform hover:scale-110 active:scale-95 ${themeColor === t.id ? 'border-slate-600 ring-2 ring-white' : 'border-transparent'}`}
+                                            title={t.label}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </header>

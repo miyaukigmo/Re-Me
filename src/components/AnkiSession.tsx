@@ -277,7 +277,7 @@ export default function AnkiSession({ initialCards }: { initialCards: AnkiCard[]
     }
 
     return (
-        <div className="w-full max-w-sm mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 h-[70vh] min-h-[500px] max-h-[85vh] flex flex-col relative z-0">
+        <div className="w-full max-w-sm mx-auto glass-card rounded-3xl overflow-hidden h-[70vh] min-h-[500px] max-h-[85vh] flex flex-col relative z-0">
             {/* Silent Progress Bar */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-slate-50 z-30">
                 <motion.div

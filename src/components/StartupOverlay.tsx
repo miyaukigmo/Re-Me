@@ -21,8 +21,9 @@ export default function StartupOverlay() {
                     initial={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.8, ease: "easeInOut" }}
-                    className="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center p-8"
+                    className="fixed inset-0 z-[100] bg-slate-50 flex flex-col items-center justify-center p-8 text-slate-900"
                 >
+                    <div className="bg-noise" />
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9, y: 10 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
